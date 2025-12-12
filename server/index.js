@@ -92,6 +92,29 @@ app.post('/api/menu', (req, res) => {
   res.json(newMenu);
 });
 
+app.delete('/api/menu/:id', (req, res) => {
+  const { id } = req.params;
+  const initialLength = db.menu.length;
+  db.menu = db.menu.filter(m => m.id !== id);
+  if (db.menu.length < initialLength) {
+    saveData();
+    res.json({ message: 'Menu deleted' });
+  } else {
+    res.status(404).json({ message: 'Menu not found' });
+  }
+});
+
+app.put('/api/menu/reorder', (req, res) => {
+  const { menu } = req.body;
+  if (Array.isArray(menu)) {
+    db.menu = menu;
+    saveData();
+    res.json({ message: 'Menu reordered' });
+  } else {
+    res.status(400).json({ message: 'Invalid data' });
+  }
+});
+
 // Orders API
 app.get('/api/orders', (req, res) => {
   res.json(db.orders);

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
-import { Plus, Save, X, Trash2, Image as ImageIcon } from 'lucide-react';
+import { DndContext, useDraggable, useDroppable, closestCenter, DragOverlay } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Plus, Save, X, Trash2, Image as ImageIcon, GripVertical } from 'lucide-react';
 import CompositionChart from './CompositionChart';
 
 // --- Draggable Ingredient Card ---
 function DraggableIngredient({ ingredient, onDelete }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: ingredient.id,
-    data: ingredient,
+    data: { type: 'ingredient', ...ingredient }, // Add type
   });
   
   const style = transform ? {
@@ -35,7 +37,6 @@ function DraggableIngredient({ ingredient, onDelete }) {
         <div className="font-bold text-gray-800 truncate">{ingredient.name}</div>
         <div className="text-xs text-indigo-600 font-semibold">{ingredient.abv}% ABV</div>
       </div>
-      {/* 삭제 버튼은 호버 시에만 보이게 함 */}
       <button 
         onPointerDown={(e) => { e.stopPropagation(); onDelete(ingredient.id); }}
         className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 transition"
@@ -47,7 +48,49 @@ function DraggableIngredient({ ingredient, onDelete }) {
   );
 }
 
-// --- 믹싱 볼 영역 ---
+// --- Sortable Menu Item ---
+function SortableMenuItem({ menu, onDelete }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: menu.id, data: { type: 'menu', ...menu } });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-xl shadow-sm group">
+      <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
+        <GripVertical size={20} />
+      </div>
+      <div className="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+        {menu.image ? (
+          <img src={menu.image} alt={menu.name} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-400"><ImageIcon size={20} /></div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <h4 className="font-bold text-gray-900 truncate">{menu.name}</h4>
+        <p className="text-sm text-gray-500 truncate">{menu.description}</p>
+        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1 inline-block">{menu.finalAbv}% ABV</span>
+      </div>
+      <button 
+        onClick={() => onDelete(menu.id)}
+        className="p-2 text-gray-400 hover:text-red-500 transition opacity-0 group-hover:opacity-100"
+      >
+        <Trash2 size={18} />
+      </button>
+    </div>
+  );
+}
+
+// --- Mixing Bowl Area ---
 function MixingBowl({ items, onRemove, onUpdateVolume, totalVolume }) {
   const { setNodeRef, isOver } = useDroppable({
     id: 'mixing-bowl',
@@ -55,7 +98,6 @@ function MixingBowl({ items, onRemove, onUpdateVolume, totalVolume }) {
 
   return (
     <div className="flex gap-4 h-full">
-      {/* 리스트 영역 */}
       <div 
         ref={setNodeRef}
         className={`flex-1 min-h-[300px] border-2 border-dashed rounded-2xl p-4 transition-all duration-300 ${isOver ? 'border-indigo-500 bg-indigo-50 scale-[1.02]' : 'border-gray-300 bg-gray-50/50'}`}
@@ -102,8 +144,6 @@ function MixingBowl({ items, onRemove, onUpdateVolume, totalVolume }) {
           </div>
         )}
       </div>
-
-      {/* 시각적 차트 영역 */}
       <div className="w-40 bg-white border border-gray-200 rounded-2xl p-4 flex flex-col items-center shadow-sm">
         <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">구성</h4>
         <CompositionChart items={items} totalVolume={totalVolume} height={200} />
@@ -115,23 +155,28 @@ function MixingBowl({ items, onRemove, onUpdateVolume, totalVolume }) {
 export default function AdminMenuManager() {
   const [ingredients, setIngredients] = useState([]);
   const [mixItems, setMixItems] = useState([]);
+  const [menuList, setMenuList] = useState([]); // Loaded Menu List
   
-  // 재료 폼 상태
+  // States
   const [newIng, setNewIng] = useState({ name: '', abv: 0, image: '' });
   const [isIngFormOpen, setIsIngFormOpen] = useState(false);
-
-  // 메뉴 폼 상태
   const [menuName, setMenuName] = useState('');
   const [menuDesc, setMenuDesc] = useState('');
   const [menuImage, setMenuImage] = useState('');
 
   useEffect(() => {
     fetchIngredients();
+    fetchMenu();
   }, []);
 
   const fetchIngredients = async () => {
     const res = await api.get('/api/ingredients');
     setIngredients(res.data);
+  };
+
+  const fetchMenu = async () => {
+    const res = await api.get('/api/menu');
+    setMenuList(res.data);
   };
 
   const handleAddIngredient = async (e) => {
@@ -145,7 +190,6 @@ export default function AdminMenuManager() {
 
   const handleDeleteIngredient = async (id) => {
     if (!window.confirm('정말 이 재료를 삭제하시겠습니까?')) return;
-    
     try {
       await api.delete(`/api/ingredients/${id}`);
       setIngredients(prev => prev.filter(i => i.id !== id));
@@ -154,11 +198,41 @@ export default function AdminMenuManager() {
     }
   };
 
-  const handleDragEnd = (event) => {
+  const handleDeleteMenu = async (id) => {
+    if (!window.confirm('정말 이 메뉴를 삭제하시겠습니까?')) return;
+    try {
+      await api.delete(`/api/menu/${id}`);
+      setMenuList(prev => prev.filter(m => m.id !== id));
+    } catch (e) {
+      alert('메뉴 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  // --- Drag & Drop Logic ---
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
-    if (over && over.id === 'mixing-bowl') {
+    
+    if (!over) return;
+
+    // 1. Ingredient -> Mixing Bowl
+    if (active.data.current?.type === 'ingredient' && over.id === 'mixing-bowl') {
       const addedItem = { ...active.data.current, volume: 30 }; 
       setMixItems([...mixItems, addedItem]);
+      return;
+    }
+
+    // 2. Menu Reordering
+    if (active.data.current?.type === 'menu' && active.id !== over.id) {
+      setMenuList((items) => {
+        const oldIndex = items.findIndex((i) => i.id === active.id);
+        const newIndex = items.findIndex((i) => i.id === over.id);
+        const newItems = arrayMove(items, oldIndex, newIndex);
+        
+        // Sync with server
+        api.put('/api/menu/reorder', { menu: newItems }).catch(err => console.error("Reorder failed", err));
+        
+        return newItems;
+      });
     }
   };
 
@@ -194,10 +268,11 @@ export default function AdminMenuManager() {
     setMenuName('');
     setMenuDesc('');
     setMenuImage('');
+    fetchMenu(); // Refresh list
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)]">
         
         {/* === 왼쪽 패널: 재료 라이브러리 === */}
@@ -247,11 +322,11 @@ export default function AdminMenuManager() {
           </div>
         </div>
 
-        {/* === 오른쪽 패널: 작업대 === */}
-        <div className="lg:col-span-7 flex flex-col h-full gap-4">
+        {/* === 오른쪽 패널: 작업대 & 메뉴 관리 === */}
+        <div className="lg:col-span-7 flex flex-col h-full gap-4 overflow-y-auto pr-2">
           
           {/* 믹싱 영역 */}
-          <div className="flex-1 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
              <h3 className="font-bold text-gray-700 mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <span className="w-2 h-6 bg-indigo-500 rounded-full"></span>
@@ -267,7 +342,7 @@ export default function AdminMenuManager() {
           </div>
 
           {/* 결과 & 저장 영역 */}
-          <div className="bg-gray-900 text-white p-5 rounded-2xl shadow-xl flex-shrink-0">
+          <div className="bg-gray-900 text-white p-5 rounded-2xl shadow-xl">
              <div className="flex gap-6">
                 <div className="flex-1 space-y-3">
                    <input 
@@ -306,6 +381,21 @@ export default function AdminMenuManager() {
              >
                 <Save size={18} /> 메뉴 등록
              </button>
+          </div>
+
+          {/* 등록된 메뉴 관리 (Sortable List) */}
+          <div className="mt-4">
+            <h3 className="font-bold text-gray-700 mb-4 flex items-center gap-2">
+              <span className="w-2 h-6 bg-gray-500 rounded-full"></span>
+              등록된 메뉴 ({menuList.length})
+            </h3>
+            <SortableContext items={menuList.map(m => m.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-3 pb-10">
+                {menuList.map(menu => (
+                  <SortableMenuItem key={menu.id} menu={menu} onDelete={handleDeleteMenu} />
+                ))}
+              </div>
+            </SortableContext>
           </div>
 
         </div>

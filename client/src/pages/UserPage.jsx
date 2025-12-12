@@ -201,7 +201,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
                   <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5 ml-1">주문자 이름</label>
                   <input 
                     type="text" 
-                    placeholder="이름 (예: 민수)" 
+                    placeholder="이름" 
                     className="w-full p-3.5 rounded-xl border-none bg-white shadow-sm font-bold text-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:font-normal"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
