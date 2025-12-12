@@ -210,7 +210,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5 ml-1">요청사항 (선택)</label>
                   <textarea 
-                    placeholder="얼음 적게, 레몬 슬라이스 추가 등" 
+                    placeholder="얼음 적게, 진하게/연하게 등.." 
                     className="w-full p-3.5 rounded-xl border-none bg-white shadow-sm text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none h-20 resize-none placeholder:text-gray-400"
                     value={requestMessage}
                     onChange={(e) => setRequestMessage(e.target.value)}
@@ -408,9 +408,9 @@ export default function UserPage() {
         <div>
           <h1 className="text-2xl font-black text-gray-900 flex items-center gap-2 tracking-tight">
             <Beer className="text-yellow-500 fill-yellow-500" />
-            파티 바
+            바
           </h1>
-          <p className="text-sm text-gray-500 font-medium">오늘은 내가 바텐더!</p>
+          <p className="text-sm text-gray-500 font-medium">ㅎㅇ</p>
         </div>
         <motion.button 
           whileTap={{ scale: 0.9 }}
