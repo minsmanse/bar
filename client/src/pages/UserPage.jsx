@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import api from '../api';
-import { ShoppingBag, Minus, Plus, Beer, X, Clock, Trash2, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Minus, Plus, Beer, X, Clock, Trash2, ChevronDown, Key } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import CompositionChart from '../components/CompositionChart';
 
 // --- Animations ---
@@ -334,6 +335,7 @@ export default function UserPage() {
   // UI States
   const [cartOpen, setCartOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const navigate = useNavigate(); // useNavigate 훅 초기화
 
   useEffect(() => {
     fetchMenu();
@@ -490,6 +492,22 @@ export default function UserPage() {
             );
           })
         )}
+      </motion.div>
+
+      {/* 관리자 페이지로 이동 버튼 */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, type: "spring", stiffness: 300, damping: 30 }}
+        className="p-4 flex justify-center mt-6"
+      >
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/admin?not_admin=true')}
+          className="flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-700 rounded-full font-bold shadow-md hover:bg-gray-300 transition-colors"
+        >
+          <Key size={18} /> 관리자 페이지로 이동
+        </motion.button>
       </motion.div>
 
       {/* Floating Order Bar */}
