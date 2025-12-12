@@ -9,7 +9,7 @@ export default function FuckYouPage() {
         className="max-w-full h-auto max-h-[70vh] rounded-lg shadow-xl mb-8 border-4 border-red-600"
       />
       <h1 className="text-5xl md:text-7xl font-extrabold text-red-600 text-center tracking-tighter drop-shadow-[0_5px_5px_rgba(255,0,0,0.5)]">
-        너 관리자 아니잖아!
+        너관리자아니잖아.
       </h1>
     </div>
   );
