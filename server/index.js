@@ -19,7 +19,7 @@ const io = new Server(server, {
 const mongoose = require('mongoose');
 
 const MONGO_URI = process.env.MONGO_URI;
-
+const PORT = process.env.PORT || 3001;
 
 mongoose.connect(MONGO_URI)
   .then(() => {
@@ -206,5 +206,3 @@ app.put('/api/orders/:id/status', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-const PORT = 3001;
