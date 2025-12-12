@@ -3,25 +3,28 @@ import { io } from 'socket.io-client';
 import AdminMenuManager from '../components/AdminMenuManager';
 import AdminOrders from '../components/AdminOrders';
 import { LayoutDashboard, Wine } from 'lucide-react';
-import { useLocation } from 'react-router-dom'; // useLocation import
+import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const socketURL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const socket = io(socketURL);
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('orders');
-  const location = useLocation(); // useLocation 훅 사용
+  const location = useLocation();
   const [showAccessDenied, setShowAccessDenied] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('not_admin') === 'true') {
       setShowAccessDenied(true);
-      // 일정 시간 후 메시지 숨기기
+      // 일정 시간 후 메시지 숨기기 (원한다면 제거 가능)
       const timer = setTimeout(() => {
         setShowAccessDenied(false);
       }, 5000); // 5초 후 사라짐
       return () => clearTimeout(timer);
+    } else {
+      setShowAccessDenied(false); // not_admin 파라미터가 없으면 경고 숨김
     }
   }, [location.search]);
 
@@ -45,18 +48,35 @@ export default function AdminPage() {
         </nav>
       </header>
 
-      {showAccessDenied && (
-        <div className="fixed inset-0 bg-black/80 z-[9999] flex flex-col items-center justify-center p-4 animate-in fade-in duration-500">
-          <img 
-            src="https://dcimg1.dcinside.com/viewimage.php?id=2cb9dd2ff6c131a960&no=24b0d769e1d32ca73fea85fa11d028315c2a09e47d692719f95ebfe695d2a17112e7c2c528c8ebe8ad26729d9309e79deb4284f3f6ed1e7f451e7427ae3281954a902f5ea89fd1aa909e5596407ec96221ba577da5d23d&orgExt" 
-            alt="Access Denied" 
-            className="max-w-full h-auto max-h-[70vh] rounded-lg shadow-xl mb-6"
-          />
-          <p className="text-4xl font-extrabold text-red-500 animate-pulse drop-shadow-lg text-center">
-            너 관리자 아니잖아!
-          </p>
-        </div>
-      )}
+      {/* 관리자 아님 경고 오버레이 */}
+      <AnimatePresence>
+        {showAccessDenied && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-[9999] flex flex-col items-center justify-center p-4"
+          >
+            <motion.img 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              src="https://dcimg1.dcinside.com/viewimage.php?id=2cb9dd2ff6c131a960&no=24b0d769e1d32ca73fea85fa11d028315c2a09e47d692719f95ebfe695d2a17112e7c2c528c8ebe8ad26729d9309e79deb4284f3f6ed1e7f451e7427ae3281954a902f5ea89fd1aa909e5596407ec96221ba577da5d23d&orgExt" 
+              alt="Access Denied" 
+              className="max-w-full h-auto max-h-[70vh] rounded-lg shadow-xl mb-6 border-4 border-red-500"
+            />
+            <motion.p 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-5xl font-extrabold text-red-400 animate-pulse drop-shadow-lg text-center"
+            >
+              너 관리자 아니잖아!
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="flex-1 min-h-0">
         {activeTab === 'orders' && <AdminOrders socket={socket} />}
