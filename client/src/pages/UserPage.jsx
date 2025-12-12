@@ -3,7 +3,6 @@ import axios from 'axios';
 import api from '../api';
 import { ShoppingBag, Minus, Plus, Beer, X, Clock, Trash2, ChevronDown, Key } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import CompositionChart from '../components/CompositionChart';
 
 // --- Animations ---
@@ -335,7 +334,7 @@ export default function UserPage() {
   // UI States
   const [cartOpen, setCartOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const navigate = useNavigate(); // useNavigate 훅 초기화
+  const [showAdminWarning, setShowAdminWarning] = useState(false); // 경고 오버레이 상태
 
   useEffect(() => {
     fetchMenu();
@@ -498,12 +497,12 @@ export default function UserPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, type: "spring", stiffness: 300, damping: 30 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
         className="p-4 flex justify-center mt-6"
       >
         <motion.button
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate('/admin?not_admin=true')}
+          onClick={() => setShowAdminWarning(true)} // 페이지 이동 대신 상태 변경
           className="flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-700 rounded-full font-bold shadow-md hover:bg-gray-300 transition-colors"
         >
           <Key size={18} /> 관리자 페이지로 이동
@@ -531,6 +530,39 @@ export default function UserPage() {
               </div>
               <span className="flex items-center gap-1 text-sm font-bold text-indigo-300">장바구니 <ChevronDown size={16} className="rotate-180"/></span>
             </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 관리자 아님 경고 오버레이 */}
+      <AnimatePresence>
+        {showAdminWarning && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }} // 뾰잉 대신 부드러운 페이드
+            className="fixed inset-0 bg-black/80 z-[9999] flex flex-col items-center justify-center p-4 cursor-pointer"
+            onClick={() => setShowAdminWarning(false)}
+          >
+            <motion.img 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              src="https://dcimg1.dcinside.com/viewimage.php?id=2cb9dd2ff6c131a960&no=24b0d769e1d32ca73fea85fa11d028315c2a09e47d692719f95ebfe695d2a17112e7c2c528c8ebe8ad26729d9309e79deb4284f3f6ed1e7f451e7427ae3281954a902f5ea89fd1aa909e5596407ec96221ba577da5d23d&orgExt" 
+              alt="Access Denied" 
+              className="max-w-full h-auto max-h-[70vh] rounded-lg shadow-xl mb-6 border-4 border-red-500"
+            />
+            <motion.p 
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+              className="text-5xl font-extrabold text-red-500 text-center drop-shadow-lg"
+            >
+              너 관리자 아니잖아!
+            </motion.p>
           </motion.div>
         )}
       </AnimatePresence>
