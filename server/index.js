@@ -32,12 +32,23 @@ mongoose.connect(MONGO_URI)
 
 
 // Define Schemas
-const ingredientSchema = new mongoose.Schema({}, { strict: false }); // Flexible schema for dynamic data
-const menuSchema = new mongoose.Schema({}, { strict: false }); // Flexible schema for dynamic data
+const schemaOptions = {
+  strict: false,
+  toJSON: {
+    virtuals: true,
+    versionKey: false,
+    transform: function (doc, ret) {
+      delete ret._id;
+    }
+  }
+};
+
+const ingredientSchema = new mongoose.Schema({}, schemaOptions);
+const menuSchema = new mongoose.Schema({}, schemaOptions);
 const orderSchema = new mongoose.Schema({
   status: { type: String, default: 'pending' },
   createdAt: { type: Date, default: Date.now },
-}, { strict: false }); // Flexible schema for dynamic data
+}, schemaOptions);
 
 const Ingredient = mongoose.model('Ingredient', ingredientSchema);
 const Menu = mongoose.model('Menu', menuSchema);
