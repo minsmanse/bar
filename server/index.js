@@ -2,8 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+require('dotenv').config();
 
 const app = express();
 app.use(cors()); // Allow all origins for simplicity in this demo
@@ -17,38 +16,36 @@ const io = new Server(server, {
   }
 });
 
-const DATA_FILE = path.join(__dirname, 'db.json');
+const mongoose = require('mongoose');
 
-// Default Data
-const defaultData = {
-  ingredients: [],
-  menu: [],
-  orders: []
-};
+const MONGO_URI = process.env.MONGO_URI;
 
-let db = { ...defaultData };
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// Load Data
-if (fs.existsSync(DATA_FILE)) {
-  try {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    db = JSON.parse(data);
-    console.log('Data loaded from db.json');
-  } catch (err) {
-    console.error('Error loading db.json:', err);
-  }
-} else {
-  saveData(); // Create file with defaults
-}
+// Define Schemas
+const ingredientSchema = new mongoose.Schema({}, { strict: false }); // Flexible schema for dynamic data
+const menuSchema = new mongoose.Schema({}, { strict: false }); // Flexible schema for dynamic data
+const orderSchema = new mongoose.Schema({
+  status: { type: String, default: 'pending' },
+  createdAt: { type: Date, default: Date.now },
+}, { strict: false }); // Flexible schema for dynamic data
 
-function saveData() {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
-}
+const Ingredient = mongoose.model('Ingredient', ingredientSchema);
+const Menu = mongoose.model('Menu', menuSchema);
+const Order = mongoose.model('Order', orderSchema);
 
-io.on('connection', (socket) => {
+
+io.on('connection', async (socket) => {
   console.log('User connected:', socket.id);
   
-  socket.emit('initialData', { orders: db.orders });
+  try {
+    const orders = await Order.find({}); // Fetch orders from MongoDB
+    socket.emit('initialData', { orders });
+  } catch (error) {
+    console.error('Error fetching initial orders for socket:', error);
+  }
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
@@ -56,103 +53,139 @@ io.on('connection', (socket) => {
 });
 
 // Ingredients API
-app.get('/api/ingredients', (req, res) => {
-  res.json(db.ingredients);
+app.get('/api/ingredients', async (req, res) => {
+  try {
+    const ingredients = await Ingredient.find({});
+    res.json(ingredients);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.post('/api/ingredients', (req, res) => {
-  const newIngredient = { id: Date.now().toString(), ...req.body };
-  db.ingredients.push(newIngredient);
-  saveData();
-  res.json(newIngredient);
+app.post('/api/ingredients', async (req, res) => {
+  try {
+    const newIngredient = await Ingredient.create(req.body);
+    res.status(201).json(newIngredient);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
-app.delete('/api/ingredients/:id', (req, res) => {
-  const { id } = req.params;
-  const initialLength = db.ingredients.length;
-  db.ingredients = db.ingredients.filter(ing => ing.id !== id);
-  
-  if (db.ingredients.length < initialLength) {
-    saveData();
+app.delete('/api/ingredients/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Ingredient.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).json({ message: 'Ingredient not found' });
+    }
     res.json({ message: 'Ingredient deleted' });
-  } else {
-    res.status(404).json({ message: 'Ingredient not found' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
 // Menu API
-app.get('/api/menu', (req, res) => {
-  res.json(db.menu);
-});
-
-app.post('/api/menu', (req, res) => {
-  const newMenu = { id: Date.now().toString(), ...req.body };
-  db.menu.push(newMenu);
-  saveData();
-  res.json(newMenu);
-});
-
-app.delete('/api/menu/:id', (req, res) => {
-  const { id } = req.params;
-  const initialLength = db.menu.length;
-  db.menu = db.menu.filter(m => m.id !== id);
-  if (db.menu.length < initialLength) {
-    saveData();
-    res.json({ message: 'Menu deleted' });
-  } else {
-    res.status(404).json({ message: 'Menu not found' });
+app.get('/api/menu', async (req, res) => {
+  try {
+    const menu = await Menu.find({});
+    res.json(menu);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
-app.put('/api/menu/reorder', (req, res) => {
-  const { menu } = req.body;
-  if (Array.isArray(menu)) {
-    db.menu = menu;
-    saveData();
-    res.json({ message: 'Menu reordered' });
-  } else {
-    res.status(400).json({ message: 'Invalid data' });
+app.post('/api/menu', async (req, res) => {
+  try {
+    const newMenu = await Menu.create(req.body);
+    res.status(201).json(newMenu);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete('/api/menu/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Menu.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).json({ message: 'Menu item not found' });
+    }
+    res.json({ message: 'Menu item deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+);
+
+app.put('/api/menu/reorder', async (req, res) => {
+  try {
+    const { menu } = req.body;
+    if (!Array.isArray(menu)) {
+      return res.status(400).json({ message: 'Invalid data: menu must be an array' });
+    }
+    
+    // Clear existing menu and insert new one
+    await Menu.deleteMany({});
+    await Menu.insertMany(menu);
+
+    res.json({ message: 'Menu reordered successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
 // Orders API
-app.get('/api/orders', (req, res) => {
-  res.json(db.orders);
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await Order.find({});
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.post('/api/orders', (req, res) => {
-  const newOrder = { 
-    id: Date.now().toString(), 
-    status: 'pending', 
-    createdAt: new Date(),
-    ...req.body 
-  };
-  db.orders.push(newOrder);
-  saveData();
-  io.emit('newOrder', newOrder);
-  res.json(newOrder);
+app.post('/api/orders', async (req, res) => {
+  try {
+    // Mongoose schema handles default status and createdAt
+    const newOrder = await Order.create(req.body); 
+    io.emit('newOrder', newOrder);
+    res.status(201).json(newOrder);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
-app.post('/api/orders/batch', (req, res) => {
-  const { orderIds } = req.body;
-  if (!Array.isArray(orderIds)) return res.status(400).json([]);
-  const myOrders = db.orders.filter(o => orderIds.includes(o.id));
-  // 최신순 정렬
-  myOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  res.json(myOrders);
+app.post('/api/orders/batch', async (req, res) => {
+  try {
+    const { orderIds } = req.body;
+    if (!Array.isArray(orderIds)) {
+      return res.status(400).json([]);
+    }
+    const myOrders = await Order.find({ _id: { $in: orderIds } });
+    // 최신순 정렬
+    myOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json(myOrders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
-app.put('/api/orders/:id/status', (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
-  const order = db.orders.find(o => o.id === id);
-  if (order) {
-    order.status = status;
-    saveData();
-    io.emit('orderUpdated', order);
-    res.json(order);
-  } else {
-    res.status(404).json({ message: 'Order not found' });
+app.put('/api/orders/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true } // Return the updated document
+    );
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    io.emit('orderUpdated', updatedOrder);
+    res.json(updatedOrder);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
