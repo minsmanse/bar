@@ -20,9 +20,17 @@ const mongoose = require('mongoose');
 
 const MONGO_URI = process.env.MONGO_URI;
 
+const PORT = 3001;
+
 mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
+  .then(() => {
+    console.log('MongoDB connected');
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
   .catch(err => console.error('MongoDB connection error:', err));
+
 
 // Define Schemas
 const ingredientSchema = new mongoose.Schema({}, { strict: false }); // Flexible schema for dynamic data
@@ -190,6 +198,3 @@ app.put('/api/orders/:id/status', async (req, res) => {
 });
 
 const PORT = 3001;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
