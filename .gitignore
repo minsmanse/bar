@@ -1,0 +1,78 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+pnpm-error.log*
+.pnpm-store/
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+.report/
+
+# Runtime data
+.c9/
+.node_repl_history
+*.sqlite3
+*.qdldb
+
+# Binary artifacts
+*.node
+*.a
+*.laf
+
+# Compressed
+*.zip
+*.gz
+*.tgz
+*.rar
+*.7z
+*.dmg
+
+# dotenv environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging.local
+
+# For client
+/client/dist
+/client/build
+/client/node_modules
+/client/.vite/
+/client/.vscode/
+
+# For server
+/server/node_modules
+/server/dist
+/server/build
+/server/db.json # DB 파일은 Git에 올리지 않습니다. (선택 사항, 필요 시 올릴 수 있음)
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Misc
+.cache
+*.tsbuildinfo
+.npm
+.eslintcache
+.yarn-cache
+.pnpm-cache
+/coverage
+/.next/ # Next.js specific
+/out/ # Next.js static export
+.vercel/ # Vercel specific
