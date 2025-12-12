@@ -5,6 +5,8 @@ import { CheckCircle, Clock, Bell } from 'lucide-react';
 
 export default function AdminOrders({ socket }) {
   const [orders, setOrders] = useState([]);
+  // 알림음 설정 (딩동 소리)
+  const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
 
   useEffect(() => {
     fetchOrders();
@@ -15,7 +17,10 @@ export default function AdminOrders({ socket }) {
 
     socket.on('newOrder', (order) => {
       setOrders(prev => [order, ...prev]);
-      // Play sound or show notification could be here
+      // 소리 재생 시도
+      notificationSound.play().catch(error => {
+        console.log("Audio play failed (user interaction required):", error);
+      });
     });
 
     socket.on('orderUpdated', (updatedOrder) => {
