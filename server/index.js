@@ -20,7 +20,6 @@ const mongoose = require('mongoose');
 
 const MONGO_URI = process.env.MONGO_URI;
 
-const PORT = 3001;
 
 mongoose.connect(MONGO_URI)
   .then(() => {
