@@ -43,11 +43,16 @@ const schemaOptions = {
   }
 };
 
+// Health Check Endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 const ingredientSchema = new mongoose.Schema({}, schemaOptions);
 const menuSchema = new mongoose.Schema({}, schemaOptions);
 const orderSchema = new mongoose.Schema({
-  status: { type: String, default: 'pending' },
-  createdAt: { type: Date, default: Date.now },
+  status: { type: String, default: 'pending', index: true },
+  createdAt: { type: Date, default: Date.now, index: true },
 }, schemaOptions);
 
 const Ingredient = mongoose.model('Ingredient', ingredientSchema);
@@ -59,7 +64,7 @@ io.on('connection', async (socket) => {
   console.log('User connected:', socket.id);
   
   try {
-    const orders = await Order.find({}); // Fetch orders from MongoDB
+    const orders = await Order.find({}).sort({ createdAt: -1 }).limit(100); // Fetch last 100 orders
     socket.emit('initialData', { orders });
   } catch (error) {
     console.error('Error fetching initial orders for socket:', error);
