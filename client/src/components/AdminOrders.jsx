@@ -53,7 +53,7 @@ export default function AdminOrders({ socket }) {
 
   return (
     <div className={THEME.bg}>
-      <h2 className={`text-xl font-serif font-bold mb-6 flex items-center gap-3 ${THEME.textMain}`}>
+      <h2 className={`text-xl font-title font-bold mb-6 flex items-center gap-3 ${THEME.textMain}`}>
         새로운 주문
         <motion.span
           key={orders.filter(o => o.status === 'pending').length}

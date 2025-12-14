@@ -92,7 +92,7 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
 
         <div className="px-6 pb-6 pt-6 overflow-y-auto">
           <div className="flex flex-col items-center mb-6">
-            <h2 className={`text-2xl font-serif font-bold ${THEME.textMain} mb-2 text-center tracking-tight`}>{item.name}</h2>
+            <h2 className={`text-2xl font-title font-bold ${THEME.textMain} mb-2 text-center tracking-tight`}>{item.name}</h2>
             <p className={`${THEME.textMuted} leading-relaxed text-sm text-center mb-6 max-w-xs`}>{item.description}</p>
             <div className="w-full max-w-[180px]">
               <CompositionChart items={item.items} totalVolume={item.totalVolume} height={180} />
@@ -103,7 +103,7 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
         <div className={`p-5 border-t ${THEME.border} bg-[#FBFBF9] mt-auto flex items-center justify-between gap-4`}>
           <div className="flex flex-col items-start pl-1">
             <span className={`text-xs font-semibold ${THEME.textMuted} uppercase tracking-wider`}>ABV</span>
-            <span className={`text-2xl font-serif font-bold ${THEME.accent}`}>{item.finalAbv}<span className="text-base font-sans ml-0.5">%</span></span>
+            <span className={`text-2xl font-title font-bold ${THEME.accent}`}>{item.finalAbv}<span className="text-base font-sans ml-0.5">%</span></span>
           </div>
 
           <div className="flex-1">
@@ -162,7 +162,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
             </div>
 
             <div className={`px-6 pb-4 flex justify-between items-center border-b ${THEME.border}`}>
-              <h2 className={`text-xl font-serif font-bold ${THEME.textMain}`}>내 주문 <span className={`${THEME.accent} font-sans ml-1 text-lg`}>({totalQuantity})</span></h2>
+              <h2 className={`text-xl font-title font-bold ${THEME.textMain}`}>내 주문 <span className={`${THEME.accent} font-sans ml-1 text-lg`}>({totalQuantity})</span></h2>
               <button onClick={onClose} className="p-2 hover:bg-[#EAE8E4] rounded-full transition-colors text-[#8E8B86]">
                 <ChevronDown size={20} />
               </button>
@@ -275,7 +275,7 @@ function OrderHistoryModal({ isOpen, onClose }) {
         className={`relative ${THEME.bg} w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl z-10 max-h-[80vh] flex flex-col`}
       >
         <div className={`p-5 border-b ${THEME.border} flex justify-between items-center ${THEME.card}`}>
-          <h2 className={`text-lg font-serif font-bold ${THEME.textMain} flex items-center gap-2`}>
+          <h2 className={`text-lg font-title font-bold ${THEME.textMain} flex items-center gap-2`}>
             주문 내역
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-[#F2F0ED] rounded-full text-[#8E8B86]"><X size={18} /></button>
@@ -409,7 +409,7 @@ export default function UserPage() {
       {/* Header */}
       <header className={`p-6 sticky top-0 z-10 flex justify-between items-center bg-[#F9F8F6]/80 backdrop-blur-md border-b ${THEME.border} transition-all`}>
         <div>
-          <h1 className={`text-2xl font-serif font-bold ${THEME.textMain} flex items-center gap-2 tracking-tight`}>
+          <h1 className={`text-2xl font-title font-bold ${THEME.textMain} flex items-center gap-2 tracking-tight`}>
             바
           </h1>
           <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest ml-0.5`}>메뉴</p>
@@ -459,7 +459,7 @@ export default function UserPage() {
                   </div>
 
                   <div className="flex-1 min-w-0 py-1">
-                    <h3 className={`font-serif font-bold text-lg ${THEME.textMain} truncate tracking-tight mb-0.5`}>{item.name}</h3>
+                    <h3 className={`font-title font-bold text-lg ${THEME.textMain} truncate tracking-tight mb-0.5`}>{item.name}</h3>
                     <p className={`${THEME.textMuted} text-sm mb-2 line-clamp-1`}>{item.description}</p>
                     <span className={`inline-block ${THEME.bg} border ${THEME.border} ${THEME.textMuted} text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider`}>
                       {item.finalAbv}% ABV
