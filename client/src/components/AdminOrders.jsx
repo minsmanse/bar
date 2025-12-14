@@ -76,8 +76,8 @@ export default function AdminOrders({ socket }) {
               exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className={`p-5 rounded-2xl border-l-4 relative overflow-hidden ${THEME.card} border ${THEME.border} shadow-sm ${order.status === 'completed'
-                  ? 'border-l-[#5B9A8B] opacity-60'
-                  : 'border-l-[#D97757] shadow-md'
+                ? 'border-l-[#5B9A8B] opacity-60'
+                : 'border-l-[#D97757] shadow-md'
                 }`}
             >
               {order.status === 'pending' && (
@@ -95,7 +95,7 @@ export default function AdminOrders({ socket }) {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className={`text-lg font-bold ${THEME.textMain}`}>{order.userName || 'Guest'}</span>
+                    <span className={`text-lg font-bold ${THEME.textMain}`}>{order.userName || '게스트'}</span>
                     <span className={`text-xs ${THEME.textMuted} font-mono`}>#{order.id.slice(-4)}</span>
                   </div>
                   <p className={`text-xs ${THEME.textMuted} flex items-center gap-1`}>
@@ -104,8 +104,8 @@ export default function AdminOrders({ socket }) {
                   </p>
                 </div>
                 <div className={`px-2.5 py-1 rounded-lg text-xs font-semibold uppercase tracking-wide ${order.status === 'completed'
-                    ? 'bg-[#5B9A8B]/10 text-[#5B9A8B]'
-                    : 'bg-[#D97757]/10 text-[#D97757]'
+                  ? 'bg-[#5B9A8B]/10 text-[#5B9A8B]'
+                  : 'bg-[#D97757]/10 text-[#D97757]'
                   }`}>
                   {order.status === 'pending' ? '대기중' : '완료'}
                 </div>

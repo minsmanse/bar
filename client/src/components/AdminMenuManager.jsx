@@ -48,7 +48,7 @@ function DraggableIngredient({ ingredient, onDelete }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className={`font-bold ${THEME.textMain} truncate`}>{ingredient.name}</div>
-        <div className={`text-xs ${THEME.accent} font-semibold`}>{ingredient.abv}% ABV</div>
+        <div className={`text-xs ${THEME.accent} font-semibold`}>도수 {ingredient.abv}%</div>
       </div>
       <button
         onPointerDown={(e) => { e.stopPropagation(); onDelete(ingredient.id); }}
@@ -91,7 +91,7 @@ function SortableMenuItem({ menu, onDelete }) {
       <div className="flex-1 min-w-0">
         <h4 className="font-bold text-gray-900 truncate">{menu.name}</h4>
         <p className="text-sm text-gray-500 truncate">{menu.description}</p>
-        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1 inline-block">{menu.finalAbv}% ABV</span>
+        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1 inline-block">도수 {menu.finalAbv}%</span>
       </div>
       <button
         onClick={() => onDelete(menu.id)}
@@ -136,7 +136,7 @@ function MixingBowl({ items, onRemove, onUpdateVolume, totalVolume }) {
                 </div>
                 <div className="flex-1">
                   <span className="font-bold text-gray-800 block leading-tight">{item.name}</span>
-                  <span className="text-xs text-gray-500">{item.abv}% ABV</span>
+                  <span className="text-xs text-gray-500">도수 {item.abv}%</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
                   <input
@@ -381,7 +381,7 @@ export default function AdminMenuManager() {
               </div>
 
               <div className="text-right min-w-[100px]">
-                <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">ABV</p>
+                <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">도수</p>
                 <div className="text-4xl font-black text-yellow-400 leading-none">{finalAbv.toFixed(1)}<span className="text-lg text-yellow-600">%</span></div>
                 <p className="text-gray-500 text-xs mt-1">{totalVolume}ml</p>
               </div>

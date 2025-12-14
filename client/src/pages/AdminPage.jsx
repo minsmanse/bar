@@ -31,7 +31,7 @@ export default function AdminPage() {
         {/* Header */}
         <header className={`flex justify-between items-center mb-6 flex-shrink-0 pb-5 border-b ${THEME.border}`}>
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => navigate('/')}
               className={`p-2 ${THEME.card} border ${THEME.border} rounded-xl ${THEME.textMuted} hover:${THEME.textMain} transition-colors shadow-sm`}
             >
@@ -39,31 +39,29 @@ export default function AdminPage() {
             </button>
             <div>
               <h1 className={`text-2xl font-serif font-bold ${THEME.textMain} tracking-tight`}>
-                Bar <span className={THEME.accent}>Admin</span>
+                Bar <span className={THEME.accent}>관리자</span>
               </h1>
-              <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest`}>Dashboard</p>
+              <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest`}>대시보드</p>
             </div>
           </div>
-          
+
           {/* Tab Navigation */}
           <nav className={`flex ${THEME.card} p-1.5 rounded-xl border ${THEME.border} shadow-sm`}>
-            <button 
+            <button
               onClick={() => setActiveTab('orders')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${
-                activeTab === 'orders' 
-                  ? `${THEME.buttonPrimary} text-[#F9F8F6] shadow-md` 
-                  : `${THEME.textMuted} hover:${THEME.textMain} hover:bg-[#F2F0ED]`
-              }`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${activeTab === 'orders'
+                ? `${THEME.buttonPrimary} text-[#F9F8F6] shadow-md`
+                : `${THEME.textMuted} hover:${THEME.textMain} hover:bg-[#F2F0ED]`
+                }`}
             >
               <LayoutDashboard size={16} /> 주문 확인
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('studio')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${
-                activeTab === 'studio' 
-                  ? `${THEME.buttonPrimary} text-[#F9F8F6] shadow-md` 
-                  : `${THEME.textMuted} hover:${THEME.textMain} hover:bg-[#F2F0ED]`
-              }`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 ${activeTab === 'studio'
+                ? `${THEME.buttonPrimary} text-[#F9F8F6] shadow-md`
+                : `${THEME.textMuted} hover:${THEME.textMain} hover:bg-[#F2F0ED]`
+                }`}
             >
               <Wine size={16} /> 메뉴 관리
             </button>

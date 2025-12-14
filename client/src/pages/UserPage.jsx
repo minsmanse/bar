@@ -38,15 +38,15 @@ const itemVariants = {
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.95, y: 10 },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
+  visible: {
+    opacity: 1,
+    scale: 1,
     y: 0,
     transition: { type: "spring", damping: 25, stiffness: 300 }
   },
-  exit: { 
-    opacity: 0, 
-    scale: 0.95, 
+  exit: {
+    opacity: 0,
+    scale: 0.95,
     y: 10,
     transition: { duration: 0.2 }
   }
@@ -59,15 +59,15 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
         className="absolute inset-0 bg-[#2D2B26]/40 backdrop-blur-sm"
       />
-      
-      <motion.div 
+
+      <motion.div
         variants={modalVariants}
         initial="hidden"
         animate="visible"
@@ -82,7 +82,7 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
               <Beer size={48} strokeWidth={1.5} />
             </div>
           )}
-          <button 
+          <button
             onClick={onClose}
             className="absolute top-4 right-4 bg-white/80 hover:bg-white text-[#2D2B26] p-2 rounded-full backdrop-blur-md transition-colors shadow-sm"
           >
@@ -92,29 +92,29 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
 
         <div className="px-6 pb-6 pt-6 overflow-y-auto">
           <div className="flex flex-col items-center mb-6">
-             <h2 className={`text-2xl font-serif font-bold ${THEME.textMain} mb-2 text-center tracking-tight`}>{item.name}</h2>
-             <p className={`${THEME.textMuted} leading-relaxed text-sm text-center mb-6 max-w-xs`}>{item.description}</p>
-             <div className="w-full max-w-[180px]">
-                <CompositionChart items={item.items} totalVolume={item.totalVolume} height={180} />
-             </div>
+            <h2 className={`text-2xl font-serif font-bold ${THEME.textMain} mb-2 text-center tracking-tight`}>{item.name}</h2>
+            <p className={`${THEME.textMuted} leading-relaxed text-sm text-center mb-6 max-w-xs`}>{item.description}</p>
+            <div className="w-full max-w-[180px]">
+              <CompositionChart items={item.items} totalVolume={item.totalVolume} height={180} />
+            </div>
           </div>
         </div>
 
         <div className={`p-5 border-t ${THEME.border} bg-[#FBFBF9] mt-auto flex items-center justify-between gap-4`}>
           <div className="flex flex-col items-start pl-1">
-            <span className={`text-xs font-semibold ${THEME.textMuted} uppercase tracking-wider`}>ABV</span>
+            <span className={`text-xs font-semibold ${THEME.textMuted} uppercase tracking-wider`}>도수</span>
             <span className={`text-2xl font-serif font-bold ${THEME.accent}`}>{item.finalAbv}<span className="text-base font-sans ml-0.5">%</span></span>
           </div>
 
           <div className="flex-1">
-            <button 
+            <button
               onClick={() => {
                 onAddToCart(item);
                 onClose();
               }}
               className={`w-full h-12 ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} text-[#F9F8F6] font-medium text-lg rounded-xl shadow-md transition-colors flex items-center justify-center gap-2`}
             >
-              Add to Order <Plus size={18} />
+              주문 추가 <Plus size={18} />
             </button>
           </div>
         </div>
@@ -147,11 +147,11 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose} className="fixed inset-0 bg-[#2D2B26]/40 z-40 backdrop-blur-sm"
           />
-          <motion.div 
+          <motion.div
             initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className={`fixed bottom-0 left-0 right-0 ${THEME.bg} rounded-t-[24px] z-50 max-h-[90vh] flex flex-col max-w-md mx-auto shadow-[0_-10px_40px_rgba(0,0,0,0.1)]`}
@@ -162,7 +162,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
             </div>
 
             <div className={`px-6 pb-4 flex justify-between items-center border-b ${THEME.border}`}>
-              <h2 className={`text-xl font-serif font-bold ${THEME.textMain}`}>My Order <span className={`${THEME.accent} font-sans ml-1 text-lg`}>({totalQuantity})</span></h2>
+              <h2 className={`text-xl font-serif font-bold ${THEME.textMain}`}>내 주문 <span className={`${THEME.accent} font-sans ml-1 text-lg`}>({totalQuantity})</span></h2>
               <button onClick={onClose} className="p-2 hover:bg-[#EAE8E4] rounded-full transition-colors text-[#8E8B86]">
                 <ChevronDown size={20} />
               </button>
@@ -171,11 +171,11 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
             <div className="flex-1 overflow-y-auto p-6 space-y-3">
               <AnimatePresence>
                 {cartItems.length === 0 ? (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`text-center py-10 ${THEME.textMuted}`}>Cart is empty.</motion.div>
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`text-center py-10 ${THEME.textMuted}`}>장바구니가 비어있습니다.</motion.div>
                 ) : (
                   cartItems.map(item => (
-                    <motion.div 
-                      key={item.id} 
+                    <motion.div
+                      key={item.id}
                       layout
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -187,7 +187,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-medium ${THEME.textMain} truncate`}>{item.name}</h4>
-                        <p className={`text-xs ${THEME.textMuted}`}>{item.finalAbv}% ABV</p>
+                        <p className={`text-xs ${THEME.textMuted}`}>도수 {item.finalAbv}%</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button onClick={() => onUpdateQuantity(item.id, -1)} className="p-1 text-[#8E8B86] hover:bg-[#F2F0ED] rounded"><Minus size={16} /></button>
@@ -203,31 +203,31 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
             <div className={`p-6 ${THEME.card} border-t ${THEME.border} mt-auto pb-8`}>
               <div className="mb-6 space-y-4">
                 <div>
-                  <label className={`block text-xs font-semibold ${THEME.textMuted} uppercase mb-2 ml-1`}>Your Name</label>
-                  <input 
-                    type="text" 
-                    placeholder="Name" 
+                  <label className={`block text-xs font-semibold ${THEME.textMuted} uppercase mb-2 ml-1`}>주문자명</label>
+                  <input
+                    type="text"
+                    placeholder="이름을 입력하세요"
                     className={`w-full p-3 rounded-lg border ${THEME.border} bg-[#F9F8F6] ${THEME.textMain} focus:ring-1 focus:ring-[#D97757] focus:border-[#D97757] focus:outline-none transition-all placeholder-[#Cac8c4]`}
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className={`block text-xs font-semibold ${THEME.textMuted} uppercase mb-2 ml-1`}>Request (Optional)</label>
-                  <textarea 
-                    placeholder="e.g. Less ice, extra lime..." 
+                  <label className={`block text-xs font-semibold ${THEME.textMuted} uppercase mb-2 ml-1`}>요청사항 (선택)</label>
+                  <textarea
+                    placeholder="예: 얼음 조금만 주세요, 라임 추가해주세요 등"
                     className={`w-full p-3 rounded-lg border ${THEME.border} bg-[#F9F8F6] ${THEME.textMain} focus:ring-1 focus:ring-[#D97757] focus:border-[#D97757] focus:outline-none h-20 resize-none placeholder-[#Cac8c4] text-sm`}
                     value={requestMessage}
                     onChange={(e) => setRequestMessage(e.target.value)}
                   ></textarea>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={handleOrder}
                 disabled={isOrdering || totalQuantity === 0}
                 className={`w-full ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} text-[#F9F8F6] font-medium text-lg py-3.5 rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
               >
-                {isOrdering ? 'Sending...' : 'Place Order'}
+                {isOrdering ? '전송 중...' : '주문 접수'}
               </button>
             </div>
           </motion.div>
@@ -265,42 +265,42 @@ function OrderHistoryModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-[#2D2B26]/40 backdrop-blur-sm" onClick={onClose} 
+        className="absolute inset-0 bg-[#2D2B26]/40 backdrop-blur-sm" onClick={onClose}
       />
-      <motion.div 
+      <motion.div
         variants={modalVariants}
         initial="hidden" animate="visible" exit="exit"
         className={`relative ${THEME.bg} w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl z-10 max-h-[80vh] flex flex-col`}
       >
         <div className={`p-5 border-b ${THEME.border} flex justify-between items-center ${THEME.card}`}>
           <h2 className={`text-lg font-serif font-bold ${THEME.textMain} flex items-center gap-2`}>
-            Order History
+            주문 내역
           </h2>
           <button onClick={onClose} className="p-2 hover:bg-[#F2F0ED] rounded-full text-[#8E8B86]"><X size={18} /></button>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto p-5">
           {loading ? (
-            <div className={`text-center py-10 ${THEME.textMuted}`}>Loading...</div>
+            <div className={`text-center py-10 ${THEME.textMuted}`}>로딩 중...</div>
           ) : history.length === 0 ? (
             <div className={`text-center py-10 ${THEME.textMuted}`}>
-              <p>No previous orders.</p>
+              <p>이전 주문 내역이 없습니다.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {history.map(order => (
-                <motion.div 
-                  key={order.id} 
+                <motion.div
+                  key={order.id}
                   initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
                   className={`${THEME.card} p-4 rounded-xl border ${THEME.border} shadow-sm relative overflow-hidden`}
                 >
                   <div className={`absolute left-0 top-0 bottom-0 w-1 ${order.status === 'completed' ? 'bg-[#5B9A8B]' : 'bg-[#E5C07B]'}`} />
                   <div className="flex justify-between items-start mb-2 pl-2">
-                    <span className={`text-xs font-mono ${THEME.textMuted}`}>{new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    <span className={`text-xs font-mono ${THEME.textMuted}`}>{new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${order.status === 'completed' ? 'bg-[#5B9A8B]/10 text-[#5B9A8B]' : 'bg-[#E5C07B]/10 text-[#B89655]'}`}>
-                      {order.status === 'pending' ? 'Brewing' : 'Ready'}
+                      {order.status === 'pending' ? '제조 중' : '준비 완료'}
                     </span>
                   </div>
                   <div className="pl-2 space-y-1">
@@ -312,7 +312,7 @@ function OrderHistoryModal({ isOpen, onClose }) {
                     ))}
                     {order.requestMessage && (
                       <p className={`text-xs ${THEME.textMuted} bg-[#F9F8F6] p-2 rounded-lg mt-2 border ${THEME.border}`}>
-                         {order.requestMessage}
+                        {order.requestMessage}
                       </p>
                     )}
                   </div>
@@ -330,14 +330,14 @@ function OrderHistoryModal({ isOpen, onClose }) {
 
 export default function UserPage() {
   const [menu, setMenu] = useState([]);
-  const [cart, setCart] = useState({}); 
+  const [cart, setCart] = useState({});
   const [isOrdering, setIsOrdering] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  
+
   // UI States
   const [cartOpen, setCartOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -396,9 +396,9 @@ export default function UserPage() {
 
       setCart({});
       setCartOpen(false);
-      alert(`Order placed for ${userName}!`);
+      alert(`${userName}님의 주문이 접수되었습니다!`);
     } catch (e) {
-      alert('Error placing order.');
+      alert('주문 접수 중 오류가 발생했습니다.');
     } finally {
       setIsOrdering(false);
     }
@@ -412,9 +412,9 @@ export default function UserPage() {
           <h1 className={`text-2xl font-serif font-bold ${THEME.textMain} flex items-center gap-2 tracking-tight`}>
             Bar
           </h1>
-          <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest ml-0.5`}>Menu</p>
+          <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest ml-0.5`}>메뉴</p>
         </div>
-        <motion.button 
+        <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setHistoryOpen(true)}
           className={`p-2.5 ${THEME.card} border ${THEME.border} shadow-sm rounded-xl text-[#8E8B86] hover:${THEME.accent} hover:border-[#D97757]/30 transition-colors`}
@@ -424,7 +424,7 @@ export default function UserPage() {
       </header>
 
       {/* Menu List */}
-      <motion.div 
+      <motion.div
         className="p-5 space-y-4"
         variants={containerVariants}
         initial="hidden"
@@ -432,15 +432,15 @@ export default function UserPage() {
       >
         {menu.length === 0 ? (
           <div className={`text-center py-20 ${THEME.textMuted}`}>
-            <p className="mb-2">No menu items yet.</p>
-            <p className="text-xs">Ask the bartender to create some!</p>
+            <p className="mb-2">등록된 메뉴가 없습니다.</p>
+            <p className="text-xs">바텐더에게 메뉴 추가를 요청해보세요!</p>
           </div>
         ) : (
           menu.map(item => {
             const quantity = cart[item.id]?.quantity || 0;
             return (
-              <motion.div 
-                key={item.id} 
+              <motion.div
+                key={item.id}
                 variants={itemVariants}
                 whileTap={{ scale: 0.99 }}
                 onClick={() => setSelectedItem(item)}
@@ -461,13 +461,13 @@ export default function UserPage() {
                   <h3 className={`font-serif font-bold text-lg ${THEME.textMain} truncate tracking-tight mb-0.5`}>{item.name}</h3>
                   <p className={`${THEME.textMuted} text-sm mb-2 line-clamp-1`}>{item.description}</p>
                   <span className={`inline-block ${THEME.bg} border ${THEME.border} ${THEME.textMuted} text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider`}>
-                    {item.finalAbv}% ABV
+                    도수 {item.finalAbv}%
                   </span>
                 </div>
-                
+
                 <div className="flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
                   {quantity > 0 ? (
-                    <motion.div 
+                    <motion.div
                       initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                       className="flex flex-col items-center bg-[#F2F0ED] rounded-lg p-1"
                     >
@@ -480,7 +480,7 @@ export default function UserPage() {
                       </button>
                     </motion.div>
                   ) : (
-                    <button 
+                    <button
                       onClick={() => addToCart(item)}
                       className={`${THEME.buttonPrimary} text-[#F9F8F6] p-2.5 rounded-xl shadow hover:bg-[#4A4843] transition-colors`}
                     >
@@ -502,33 +502,33 @@ export default function UserPage() {
         className="p-4 flex justify-center mt-4 opacity-50 hover:opacity-100 transition-opacity"
       >
         <button
-          onClick={() => navigate('/fuckyou')} 
+          onClick={() => navigate('/fuckyou')}
           className={`flex items-center gap-2 px-5 py-2 ${THEME.textMuted} text-xs font-medium hover:text-[#D97757] transition-colors`}
         >
-          <Key size={14} /> Admin Access
+          <Key size={14} /> 관리자 접속
         </button>
       </motion.div>
 
       {/* Floating Order Bar */}
       <AnimatePresence>
         {totalQuantity > 0 && (
-          <motion.div 
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed bottom-6 left-4 right-4 max-w-md mx-auto z-30"
           >
-            <motion.button 
+            <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => setCartOpen(true)}
               className={`w-full ${THEME.buttonPrimary} text-[#F9F8F6] font-medium text-lg py-3.5 rounded-xl shadow-xl flex justify-between items-center px-6`}
             >
               <div className="flex items-center gap-3">
                 <span className={`${THEME.accentBg} text-white px-2 py-0.5 rounded text-xs font-bold`}>{totalQuantity}</span>
-                <span className="text-[#EAE8E4] text-sm">View Cart</span>
+                <span className="text-[#EAE8E4] text-sm">장바구니 보기</span>
               </div>
-              <span className="flex items-center gap-1 text-sm font-semibold text-[#D97757]">Checkout <ChevronDown size={16} className="rotate-180"/></span>
+              <span className="flex items-center gap-1 text-sm font-semibold text-[#D97757]">주문하기 <ChevronDown size={16} className="rotate-180" /></span>
             </motion.button>
           </motion.div>
         )}
@@ -537,9 +537,9 @@ export default function UserPage() {
       {/* Modals & Sheets */}
       <AnimatePresence>
         {selectedItem && (
-          <MenuDetailModal 
-            item={selectedItem} 
-            onClose={() => setSelectedItem(null)} 
+          <MenuDetailModal
+            item={selectedItem}
+            onClose={() => setSelectedItem(null)}
             onAddToCart={addToCart}
             onRemoveFromCart={removeFromCart}
             cartQuantity={cart[selectedItem?.id]?.quantity || 0}
@@ -547,7 +547,7 @@ export default function UserPage() {
         )}
       </AnimatePresence>
 
-      <CartSheet 
+      <CartSheet
         isOpen={cartOpen}
         onClose={() => setCartOpen(false)}
         cart={cart}
@@ -556,7 +556,7 @@ export default function UserPage() {
         onUpdateQuantity={updateCartQuantity}
       />
 
-      <OrderHistoryModal 
+      <OrderHistoryModal
         isOpen={historyOpen}
         onClose={() => setHistoryOpen(false)}
       />
