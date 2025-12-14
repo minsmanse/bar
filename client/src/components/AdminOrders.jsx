@@ -76,16 +76,37 @@ export default function AdminOrders({ socket }) {
         </motion.span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+      >
         <AnimatePresence mode="popLayout">
           {orders.map((order) => (
             <motion.div
               key={order.id}
               layout
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              variants={{
+                hidden: { opacity: 0, y: 20, scale: 0.95 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: { type: "spring", stiffness: 350, damping: 25 }
+                }
+              }}
+              initial="hidden"
+              animate="visible"
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
               className={`p-5 rounded-2xl border-l-4 relative overflow-hidden ${THEME.card} border ${THEME.border} shadow-sm ${order.status === 'completed'
                 ? 'border-l-[#5B9A8B] opacity-60'
                 : 'border-l-[#D97757] shadow-md'
@@ -158,7 +179,7 @@ export default function AdminOrders({ socket }) {
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </div>
   );
 }

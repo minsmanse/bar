@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api';
 import { DndContext, useDraggable, useDroppable, closestCenter, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
@@ -329,11 +330,30 @@ export default function AdminMenuManager() {
             </form>
           )}
 
-          <div className="flex-1 overflow-y-auto pr-2 space-y-2">
+          <motion.div
+            className="flex-1 overflow-y-auto pr-2 space-y-2"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.05 }
+              }
+            }}
+          >
             {ingredients.map(ing => (
-              <DraggableIngredient key={ing.id} ingredient={ing} onDelete={handleDeleteIngredient} />
+              <motion.div
+                key={ing.id}
+                variants={{
+                  hidden: { opacity: 0, x: -20 },
+                  visible: { opacity: 1, x: 0 }
+                }}
+              >
+                <DraggableIngredient ingredient={ing} onDelete={handleDeleteIngredient} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* === 오른쪽 패널: 작업대 & 메뉴 관리 === */}

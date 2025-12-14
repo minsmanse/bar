@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import AdminMenuManager from '../components/AdminMenuManager';
 import AdminOrders from '../components/AdminOrders';
 import { LayoutDashboard, Wine, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 const socketURL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -72,8 +73,31 @@ export default function AdminPage() {
         {/* Main Content */}
         <div className={`flex-1 min-h-0 ${THEME.card} rounded-2xl overflow-hidden relative border ${THEME.border} shadow-sm`}>
           <div className="relative h-full p-6 overflow-auto">
-            {activeTab === 'orders' && <AdminOrders socket={socket} />}
-            {activeTab === 'studio' && <AdminMenuManager />}
+            <AnimatePresence mode="wait">
+              {activeTab === 'orders' ? (
+                <motion.div
+                  key="orders"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="h-full"
+                >
+                  <AdminOrders socket={socket} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="studio"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="h-full"
+                >
+                  <AdminMenuManager />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
