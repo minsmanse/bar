@@ -473,6 +473,7 @@ export default function UserPage() {
 
       {/* Menu List */}
       <motion.div
+        key={menu.length}
         className="p-5 space-y-4"
         variants={containerVariants}
         initial="hidden"
