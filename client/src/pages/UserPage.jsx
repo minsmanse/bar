@@ -472,7 +472,7 @@ export default function UserPage() {
       </header >
 
       {/* Menu List */}
-      < motion.div
+      <motion.div
         className="p-5 space-y-4"
         variants={containerVariants}
         initial="hidden"
@@ -491,9 +491,10 @@ export default function UserPage() {
                 <motion.div
                   key={item.id}
                   variants={itemVariants}
-                  whileTap={{ scale: 0.99 }}
+                  whileHover={{ scale: 1.01, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedItem(item)}
-                  className={`${THEME.card} p-4 rounded-xl shadow-sm border ${THEME.border} flex gap-4 items-center cursor-pointer hover:shadow-md transition-all duration-300`}
+                  className={`${THEME.card} p-4 rounded-xl shadow-sm border ${THEME.border} flex gap-4 items-center cursor-pointer hover:shadow-lg transition-shadow duration-200`}
                 >
                   {/* Image */}
                   <div className="w-20 h-20 bg-[#F2F0ED] rounded-lg overflow-hidden flex-shrink-0">
