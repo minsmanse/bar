@@ -3,17 +3,17 @@ import api from '../api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Clock } from 'lucide-react';
 
-// Claude-like Theme Constants
+// Modern 2024 Theme Constants
 const THEME = {
-  bg: 'bg-[#F9F8F6]',
-  textMain: 'text-[#3E3E3C]',
-  textMuted: 'text-[#8E8B86]',
-  accent: 'text-[#D97757]',
-  accentBg: 'bg-[#D97757]',
-  card: 'bg-white',
-  border: 'border-[#EAE8E4]',
-  buttonPrimary: 'bg-[#2D2B26]',
-  buttonPrimaryHover: 'hover:bg-[#4A4843]',
+  bg: 'bg-gradient-to-br from-[#FAFAFA] to-[#F0F0F0]',
+  textMain: 'text-[#1A1A1A]',
+  textMuted: 'text-[#6B7280]',
+  accent: 'text-[#EA580C]',
+  accentBg: 'bg-[#EA580C]',
+  card: 'bg-white/90 backdrop-blur-sm',
+  border: 'border-[#E5E5E5]',
+  buttonPrimary: 'bg-gradient-to-r from-[#1A1A1A] to-[#374151]',
+  buttonPrimaryHover: 'hover:from-[#374151] hover:to-[#4B5563]',
 };
 
 export default function AdminOrders({ socket }) {

@@ -5,17 +5,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import CompositionChart from '../components/CompositionChart';
 
-// --- Claude-like Theme Constants ---
+// --- Modern 2024 Theme Constants ---
 const THEME = {
-  bg: 'bg-[#F9F8F6]', // Very light warm beige
-  textMain: 'text-[#3E3E3C]', // Dark charcoal
-  textMuted: 'text-[#8E8B86]', // Warm gray
-  accent: 'text-[#D97757]', // Terracotta
-  accentBg: 'bg-[#D97757]',
-  card: 'bg-white',
-  border: 'border-[#EAE8E4]',
-  buttonPrimary: 'bg-[#2D2B26]', // Soft black
-  buttonPrimaryHover: 'hover:bg-[#4A4843]',
+  bg: 'bg-gradient-to-b from-[#FAFAFA] to-[#F5F5F4]', // Subtle gradient background
+  textMain: 'text-[#1A1A1A]', // Deep black for better contrast
+  textMuted: 'text-[#6B7280]', // Modern gray
+  accent: 'text-[#EA580C]', // Vibrant orange
+  accentBg: 'bg-[#EA580C]',
+  card: 'bg-white/80 backdrop-blur-sm', // Glassmorphism effect
+  border: 'border-[#E5E5E5]',
+  buttonPrimary: 'bg-gradient-to-r from-[#1A1A1A] to-[#374151]', // Gradient button
+  buttonPrimaryHover: 'hover:from-[#374151] hover:to-[#4B5563]',
 };
 
 // --- Animations ---
@@ -507,7 +507,7 @@ export default function UserPage() {
           onClick={() => navigate('/fuckyou')}
           className={`flex items-center gap-2 px-5 py-2 ${THEME.textMuted} text-xs font-medium hover:text-[#D97757] transition-colors`}
         >
-          <Key size={14} /> 관리자 접속
+          <Key size={14} /> 관리자 페이지로 이동
         </button>
       </motion.div >
 
