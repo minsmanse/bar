@@ -18,38 +18,80 @@ const THEME = {
   buttonPrimaryHover: 'hover:from-[#374151] hover:to-[#4B5563]',
 };
 
-// --- Animations ---
+// --- Enhanced Animations ---
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.05 }
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+      ease: [0.22, 1, 0.36, 1]
+    }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 10, opacity: 0 },
+  hidden: { y: 20, opacity: 0, scale: 0.95 },
   visible: {
     y: 0,
     opacity: 1,
-    transition: { type: "spring", stiffness: 300, damping: 24 }
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 400,
+      damping: 28,
+      mass: 0.8
+    }
   }
 };
 
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  hidden: { opacity: 0, scale: 0.92, y: 20, filter: "blur(4px)" },
   visible: {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { type: "spring", damping: 25, stiffness: 300 }
+    filter: "blur(0px)",
+    transition: {
+      type: "spring",
+      damping: 30,
+      stiffness: 350,
+      mass: 0.9
+    }
   },
   exit: {
     opacity: 0,
     scale: 0.95,
-    y: 10,
-    transition: { duration: 0.2 }
+    y: 15,
+    filter: "blur(2px)",
+    transition: {
+      duration: 0.25,
+      ease: [0.32, 0, 0.67, 0]
+    }
   }
+};
+
+const floatingButtonVariants = {
+  hidden: { y: 30, opacity: 0, scale: 0.9 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 500,
+      damping: 30
+    }
+  },
+  exit: {
+    y: 20,
+    opacity: 0,
+    scale: 0.95,
+    transition: { duration: 0.2 }
+  },
+  tap: { scale: 0.97 },
+  hover: { scale: 1.02 }
 };
 
 // --- Components ---
@@ -148,13 +190,19 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
       {isOpen && (
         <>
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={onClose} className="fixed inset-0 bg-[#2D2B26]/40 z-40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/30 z-40 backdrop-blur-md"
           />
           <motion.div
-            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className={`fixed bottom-0 left-0 right-0 ${THEME.bg} rounded-t-[24px] z-50 max-h-[90vh] flex flex-col max-w-md mx-auto shadow-[0_-10px_40px_rgba(0,0,0,0.1)]`}
+            initial={{ y: "100%", opacity: 0.8 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "100%", opacity: 0.8 }}
+            transition={{ type: "spring", damping: 35, stiffness: 400, mass: 0.8 }}
+            className={`fixed bottom-0 left-0 right-0 ${THEME.bg} rounded-t-[28px] z-50 max-h-[90vh] flex flex-col max-w-md mx-auto shadow-[0_-20px_60px_rgba(0,0,0,0.15)]`}
           >
             {/* Handle Bar */}
             <div className="pt-4 pb-2 flex justify-center cursor-pointer" onClick={onClose}>
@@ -512,29 +560,37 @@ export default function UserPage() {
       </motion.div >
 
       {/* Floating Order Bar */}
-      < AnimatePresence >
+      <AnimatePresence>
         {totalQuantity > 0 && (
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 20, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            variants={floatingButtonVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            whileHover="hover"
             className="fixed bottom-6 left-4 right-4 max-w-md mx-auto z-30"
           >
             <motion.button
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setCartOpen(true)}
-              className={`w-full ${THEME.buttonPrimary} text-[#F9F8F6] font-medium text-lg py-3.5 rounded-xl shadow-xl flex justify-between items-center px-6`}
+              className={`w-full ${THEME.buttonPrimary} text-white font-medium text-lg py-4 rounded-2xl shadow-2xl flex justify-between items-center px-6 backdrop-blur-sm`}
             >
               <div className="flex items-center gap-3">
-                <span className={`${THEME.accentBg} text-white px-2 py-0.5 rounded text-xs font-bold`}>{totalQuantity}</span>
-                <span className="text-[#EAE8E4] text-sm">장바구니 보기</span>
+                <motion.span
+                  key={totalQuantity}
+                  initial={{ scale: 1.3 }}
+                  animate={{ scale: 1 }}
+                  className={`${THEME.accentBg} text-white px-2.5 py-1 rounded-lg text-xs font-bold`}
+                >
+                  {totalQuantity}
+                </motion.span>
+                <span className="text-white/80 text-sm">장바구니 보기</span>
               </div>
-              <span className="flex items-center gap-1 text-sm font-semibold text-[#D97757]">주문하기 <ChevronDown size={16} className="rotate-180" /></span>
+              <span className="flex items-center gap-1 text-sm font-semibold text-[#EA580C]">주문하기 <ChevronDown size={16} className="rotate-180" /></span>
             </motion.button>
           </motion.div>
         )}
-      </AnimatePresence >
+      </AnimatePresence>
 
       {/* Modals & Sheets */}
       < AnimatePresence >
