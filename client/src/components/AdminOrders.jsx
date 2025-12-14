@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import api from '../api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Clock } from 'lucide-react';
@@ -19,7 +19,13 @@ const THEME = {
 
 export default function AdminOrders({ socket }) {
   const [orders, setOrders] = useState([]);
-  const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+  const notificationSoundRef = useRef(null);
+
+  // Initialize audio on mount
+  useEffect(() => {
+    notificationSoundRef.current = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+    notificationSoundRef.current.preload = 'auto';
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -28,9 +34,13 @@ export default function AdminOrders({ socket }) {
 
     socket.on('newOrder', (order) => {
       setOrders(prev => [order, ...prev]);
-      notificationSound.play().catch(error => {
-        console.log("Audio play failed (user interaction required):", error);
-      });
+      // Play notification sound
+      if (notificationSoundRef.current) {
+        notificationSoundRef.current.currentTime = 0;
+        notificationSoundRef.current.play().catch(error => {
+          console.log("Audio play failed (user interaction required):", error);
+        });
+      }
     });
 
     socket.on('orderUpdated', (updatedOrder) => {
