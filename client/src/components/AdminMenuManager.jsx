@@ -15,8 +15,9 @@ const THEME = {
   accentBg: 'bg-[#EA580C]',
   card: 'bg-white/90 backdrop-blur-sm',
   border: 'border-[#E5E5E5]',
-  buttonPrimary: 'bg-gradient-to-r from-[#1A1A1A] to-[#374151]',
-  buttonPrimaryHover: 'hover:from-[#374151] hover:to-[#4B5563]',
+  buttonPrimary: 'bg-[#1F2937] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_4px_6px_-1px_rgba(0,0,0,0.2)]',
+  buttonPrimaryHover: 'hover:bg-[#374151]',
+  buttonPrimaryActive: 'active:bg-[#111827] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]',
 };
 
 // --- Draggable Ingredient Card ---

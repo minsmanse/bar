@@ -7,41 +7,41 @@ import CompositionChart from '../components/CompositionChart';
 
 // --- Modern 2024 Theme Constants ---
 const THEME = {
-  bg: 'bg-gradient-to-b from-[#FAFAFA] to-[#F5F5F4]', // Subtle gradient background
-  textMain: 'text-[#1A1A1A]', // Deep black for better contrast
-  textMuted: 'text-[#6B7280]', // Modern gray
-  accent: 'text-[#EA580C]', // Vibrant orange
+  bg: 'bg-gradient-to-b from-[#FAFAFA] to-[#F5F5F4]',
+  textMain: 'text-[#1A1A1A]',
+  textMuted: 'text-[#6B7280]',
+  accent: 'text-[#EA580C]',
   accentBg: 'bg-[#EA580C]',
-  card: 'bg-white/80 backdrop-blur-sm', // Glassmorphism effect
+  card: 'bg-white/80 backdrop-blur-sm',
   border: 'border-[#E5E5E5]',
-  buttonPrimary: 'bg-gradient-to-r from-[#1A1A1A] to-[#374151]', // Gradient button
-  buttonPrimaryHover: 'hover:from-[#374151] hover:to-[#4B5563]',
+  // Solid dark button with 3D pressed effect via shadow
+  buttonPrimary: 'bg-[#1F2937] shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_4px_6px_-1px_rgba(0,0,0,0.2),0_2px_4px_-1px_rgba(0,0,0,0.1)]',
+  buttonPrimaryHover: 'hover:bg-[#374151] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.15),0_6px_8px_-2px_rgba(0,0,0,0.25)]',
+  buttonPrimaryActive: 'active:bg-[#111827] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]',
 };
 
-// --- Enhanced Animations ---
+// --- Enhanced Animations (Cascade Card Effect) ---
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 1 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
-      ease: [0.22, 1, 0.36, 1]
+      staggerChildren: 0.06,
+      delayChildren: 0.05
     }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0, scale: 0.95 },
+  hidden: { x: -30, opacity: 0 },
   visible: {
-    y: 0,
+    x: 0,
     opacity: 1,
-    scale: 1,
     transition: {
       type: "spring",
-      stiffness: 400,
-      damping: 28,
-      mass: 0.8
+      stiffness: 500,
+      damping: 35,
+      mass: 0.5
     }
   }
 };
@@ -154,7 +154,7 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
                 onAddToCart(item);
                 onClose();
               }}
-              className={`w-full h-12 ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} text-[#F9F8F6] font-medium text-lg rounded-xl shadow-md transition-colors flex items-center justify-center gap-2`}
+              className={`w-full h-12 ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} ${THEME.buttonPrimaryActive} text-white font-medium text-lg rounded-xl transition-all flex items-center justify-center gap-2`}
             >
               주문 추가 <Plus size={18} />
             </button>
@@ -273,7 +273,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
               <button
                 onClick={handleOrder}
                 disabled={isOrdering || totalQuantity === 0}
-                className={`w-full ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} text-[#F9F8F6] font-medium text-lg py-3.5 rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
+                className={`w-full ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} ${THEME.buttonPrimaryActive} text-white font-medium text-lg py-3.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all`}
               >
                 {isOrdering ? '전송 중...' : '주문 접수'}
               </button>
@@ -531,7 +531,7 @@ export default function UserPage() {
                     ) : (
                       <button
                         onClick={() => addToCart(item)}
-                        className={`${THEME.buttonPrimary} text-[#F9F8F6] p-2.5 rounded-xl shadow hover:bg-[#4A4843] transition-colors`}
+                        className={`${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} ${THEME.buttonPrimaryActive} text-white p-2.5 rounded-xl transition-all`}
                       >
                         <Plus size={18} />
                       </button>
@@ -573,7 +573,7 @@ export default function UserPage() {
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={() => setCartOpen(true)}
-              className={`w-full ${THEME.buttonPrimary} text-white font-medium text-lg py-4 rounded-2xl shadow-2xl flex justify-between items-center px-6 backdrop-blur-sm`}
+              className={`w-full ${THEME.buttonPrimary} ${THEME.buttonPrimaryHover} ${THEME.buttonPrimaryActive} text-white font-medium text-lg py-4 rounded-2xl flex justify-between items-center px-6`}
             >
               <div className="flex items-center gap-3">
                 <motion.span
