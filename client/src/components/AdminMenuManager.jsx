@@ -6,40 +6,53 @@ import { CSS } from '@dnd-kit/utilities';
 import { Plus, Save, X, Trash2, Image as ImageIcon, GripVertical } from 'lucide-react';
 import CompositionChart from './CompositionChart';
 
+// Claude-like Theme Constants
+const THEME = {
+  bg: 'bg-[#F9F8F6]',
+  textMain: 'text-[#3E3E3C]',
+  textMuted: 'text-[#8E8B86]',
+  accent: 'text-[#D97757]',
+  accentBg: 'bg-[#D97757]',
+  card: 'bg-white',
+  border: 'border-[#EAE8E4]',
+  buttonPrimary: 'bg-[#2D2B26]',
+  buttonPrimaryHover: 'hover:bg-[#4A4843]',
+};
+
 // --- Draggable Ingredient Card ---
 function DraggableIngredient({ ingredient, onDelete }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: ingredient.id,
-    data: { type: 'ingredient', ...ingredient }, // Add type
+    data: { type: 'ingredient', ...ingredient },
   });
-  
+
   const style = transform ? {
     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
     zIndex: 999,
   } : undefined;
 
   return (
-    <div 
-      ref={setNodeRef} 
-      style={style} 
-      {...listeners} 
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
       {...attributes}
-      className="group relative flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md transition hover:border-indigo-300"
+      className={`group relative flex items-center gap-3 p-3 ${THEME.card} border ${THEME.border} rounded-xl shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md transition hover:border-[#D97757]/30`}
     >
-      <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
+      <div className="w-12 h-12 rounded-lg bg-[#F2F0ED] overflow-hidden flex-shrink-0">
         {ingredient.image ? (
           <img src={ingredient.image} alt={ingredient.name} className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400"><ImageIcon size={16} /></div>
+          <div className={`w-full h-full flex items-center justify-center ${THEME.textMuted}`}><ImageIcon size={16} /></div>
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="font-bold text-gray-800 truncate">{ingredient.name}</div>
-        <div className="text-xs text-indigo-600 font-semibold">{ingredient.abv}% ABV</div>
+        <div className={`font-bold ${THEME.textMain} truncate`}>{ingredient.name}</div>
+        <div className={`text-xs ${THEME.accent} font-semibold`}>{ingredient.abv}% ABV</div>
       </div>
-      <button 
+      <button
         onPointerDown={(e) => { e.stopPropagation(); onDelete(ingredient.id); }}
-        className="opacity-0 group-hover:opacity-100 p-2 text-gray-400 hover:text-red-500 transition"
+        className={`opacity-0 group-hover:opacity-100 p-2 ${THEME.textMuted} hover:text-[#D97757] transition`}
         aria-label={`${ingredient.name} 삭제`}
       >
         <Trash2 size={16} />
@@ -80,7 +93,7 @@ function SortableMenuItem({ menu, onDelete }) {
         <p className="text-sm text-gray-500 truncate">{menu.description}</p>
         <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1 inline-block">{menu.finalAbv}% ABV</span>
       </div>
-      <button 
+      <button
         onClick={() => onDelete(menu.id)}
         className="p-2 text-gray-400 hover:text-red-500 transition opacity-0 group-hover:opacity-100"
       >
@@ -98,7 +111,7 @@ function MixingBowl({ items, onRemove, onUpdateVolume, totalVolume }) {
 
   return (
     <div className="flex gap-4 h-full">
-      <div 
+      <div
         ref={setNodeRef}
         className={`flex-1 min-h-[300px] border-2 border-dashed rounded-2xl p-4 transition-all duration-300 ${isOver ? 'border-indigo-500 bg-indigo-50 scale-[1.02]' : 'border-gray-300 bg-gray-50/50'}`}
       >
@@ -156,7 +169,7 @@ export default function AdminMenuManager() {
   const [ingredients, setIngredients] = useState([]);
   const [mixItems, setMixItems] = useState([]);
   const [menuList, setMenuList] = useState([]); // Loaded Menu List
-  
+
   // States
   const [newIng, setNewIng] = useState({ name: '', abv: 0, image: '' });
   const [isIngFormOpen, setIsIngFormOpen] = useState(false);
@@ -211,12 +224,12 @@ export default function AdminMenuManager() {
   // --- Drag & Drop Logic ---
   const handleDragEnd = async (event) => {
     const { active, over } = event;
-    
+
     if (!over) return;
 
     // 1. Ingredient -> Mixing Bowl
     if (active.data.current?.type === 'ingredient' && over.id === 'mixing-bowl') {
-      const addedItem = { ...active.data.current, volume: 30 }; 
+      const addedItem = { ...active.data.current, volume: 30 };
       setMixItems([...mixItems, addedItem]);
       return;
     }
@@ -227,10 +240,10 @@ export default function AdminMenuManager() {
         const oldIndex = items.findIndex((i) => i.id === active.id);
         const newIndex = items.findIndex((i) => i.id === over.id);
         const newItems = arrayMove(items, oldIndex, newIndex);
-        
+
         // Sync with server
         api.put('/api/menu/reorder', { menu: newItems }).catch(err => console.error("Reorder failed", err));
-        
+
         return newItems;
       });
     }
@@ -274,12 +287,12 @@ export default function AdminMenuManager() {
   return (
     <DndContext onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)]">
-        
+
         {/* === 왼쪽 패널: 재료 라이브러리 === */}
         <div className="lg:col-span-5 flex flex-col gap-4 bg-gray-50 p-4 rounded-2xl h-full overflow-hidden">
           <div className="flex justify-between items-center">
             <h3 className="font-bold text-gray-700 text-lg">재료 창고</h3>
-            <button 
+            <button
               onClick={() => setIsIngFormOpen(!isIngFormOpen)}
               className="text-sm bg-white border border-gray-200 px-3 py-1.5 rounded-lg font-medium hover:bg-gray-100 transition"
             >
@@ -289,26 +302,26 @@ export default function AdminMenuManager() {
 
           {isIngFormOpen && (
             <form onSubmit={handleAddIngredient} className="bg-white p-4 rounded-xl shadow-sm border border-indigo-100 space-y-3 animate-in fade-in slide-in-from-top-2">
-              <input 
-                className="w-full p-2 border rounded-lg text-sm" 
-                placeholder="이름 (예: 위스키)" 
-                value={newIng.name} 
-                onChange={e => setNewIng({...newIng, name: e.target.value})} 
+              <input
+                className="w-full p-2 border rounded-lg text-sm"
+                placeholder="이름 (예: 위스키)"
+                value={newIng.name}
+                onChange={e => setNewIng({ ...newIng, name: e.target.value })}
                 autoFocus
               />
               <div className="flex gap-2">
-                <input 
+                <input
                   type="number"
-                  className="w-24 p-2 border rounded-lg text-sm" 
-                  placeholder="도수 %" 
-                  value={newIng.abv} 
-                  onChange={e => setNewIng({...newIng, abv: Number(e.target.value)})} 
+                  className="w-24 p-2 border rounded-lg text-sm"
+                  placeholder="도수 %"
+                  value={newIng.abv}
+                  onChange={e => setNewIng({ ...newIng, abv: Number(e.target.value) })}
                 />
-                <input 
-                  className="flex-1 p-2 border rounded-lg text-sm" 
-                  placeholder="이미지 URL" 
-                  value={newIng.image} 
-                  onChange={e => setNewIng({...newIng, image: e.target.value})} 
+                <input
+                  className="flex-1 p-2 border rounded-lg text-sm"
+                  placeholder="이미지 URL"
+                  value={newIng.image}
+                  onChange={e => setNewIng({ ...newIng, image: e.target.value })}
                 />
               </div>
               <button type="submit" className="w-full bg-black text-white py-2 rounded-lg text-sm font-bold hover:bg-gray-800">재료 추가</button>
@@ -324,63 +337,63 @@ export default function AdminMenuManager() {
 
         {/* === 오른쪽 패널: 작업대 & 메뉴 관리 === */}
         <div className="lg:col-span-7 flex flex-col h-full gap-4 overflow-y-auto pr-2">
-          
+
           {/* 믹싱 영역 */}
           <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-             <h3 className="font-bold text-gray-700 mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <span className="w-2 h-6 bg-indigo-500 rounded-full"></span>
-                    믹싱 작업대
+            <h3 className="font-bold text-gray-700 mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-6 bg-indigo-500 rounded-full"></span>
+                믹싱 작업대
+              </div>
+              {menuImage && (
+                <div className="w-20 h-20 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
+                  <img src={menuImage} alt="메뉴 미리보기" className="w-full h-full object-cover" />
                 </div>
-                {menuImage && (
-                    <div className="w-20 h-20 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
-                        <img src={menuImage} alt="메뉴 미리보기" className="w-full h-full object-cover" />
-                    </div>
-                )}
-             </h3>
-             <MixingBowl items={mixItems} onRemove={removeItem} onUpdateVolume={updateVolume} totalVolume={totalVolume} />
+              )}
+            </h3>
+            <MixingBowl items={mixItems} onRemove={removeItem} onUpdateVolume={updateVolume} totalVolume={totalVolume} />
           </div>
 
           {/* 결과 & 저장 영역 */}
           <div className="bg-gray-900 text-white p-5 rounded-2xl shadow-xl">
-             <div className="flex gap-6">
-                <div className="flex-1 space-y-3">
-                   <input 
-                      className="w-full bg-gray-800 border-none rounded-lg px-3 py-2 text-white placeholder-gray-500 font-bold text-lg focus:ring-1 focus:ring-indigo-500"
-                      placeholder="칵테일 이름"
-                      value={menuName}
-                      onChange={e => setMenuName(e.target.value)}
-                   />
-                   <div className="flex gap-2">
-                      <input 
-                        className="flex-1 bg-gray-800 border-none rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500"
-                        placeholder="설명"
-                        value={menuDesc}
-                        onChange={e => setMenuDesc(e.target.value)}
-                      />
-                      <input 
-                        className="w-1/3 bg-gray-800 border-none rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500"
-                        placeholder="이미지 URL"
-                        value={menuImage}
-                        onChange={e => setMenuImage(e.target.value)}
-                      />
-                   </div>
+            <div className="flex gap-6">
+              <div className="flex-1 space-y-3">
+                <input
+                  className="w-full bg-gray-800 border-none rounded-lg px-3 py-2 text-white placeholder-gray-500 font-bold text-lg focus:ring-1 focus:ring-indigo-500"
+                  placeholder="칵테일 이름"
+                  value={menuName}
+                  onChange={e => setMenuName(e.target.value)}
+                />
+                <div className="flex gap-2">
+                  <input
+                    className="flex-1 bg-gray-800 border-none rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500"
+                    placeholder="설명"
+                    value={menuDesc}
+                    onChange={e => setMenuDesc(e.target.value)}
+                  />
+                  <input
+                    className="w-1/3 bg-gray-800 border-none rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500"
+                    placeholder="이미지 URL"
+                    value={menuImage}
+                    onChange={e => setMenuImage(e.target.value)}
+                  />
                 </div>
+              </div>
 
-                <div className="text-right min-w-[100px]">
-                   <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">ABV</p>
-                   <div className="text-4xl font-black text-yellow-400 leading-none">{finalAbv.toFixed(1)}<span className="text-lg text-yellow-600">%</span></div>
-                   <p className="text-gray-500 text-xs mt-1">{totalVolume}ml</p>
-                </div>
-             </div>
+              <div className="text-right min-w-[100px]">
+                <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">ABV</p>
+                <div className="text-4xl font-black text-yellow-400 leading-none">{finalAbv.toFixed(1)}<span className="text-lg text-yellow-600">%</span></div>
+                <p className="text-gray-500 text-xs mt-1">{totalVolume}ml</p>
+              </div>
+            </div>
 
-             <button 
-                onClick={saveMenu}
-                disabled={mixItems.length === 0 || !menuName}
-                className="mt-4 w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 transition"
-             >
-                <Save size={18} /> 메뉴 등록
-             </button>
+            <button
+              onClick={saveMenu}
+              disabled={mixItems.length === 0 || !menuName}
+              className="mt-4 w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 transition"
+            >
+              <Save size={18} /> 메뉴 등록
+            </button>
           </div>
 
           {/* 등록된 메뉴 관리 (Sortable List) */}
