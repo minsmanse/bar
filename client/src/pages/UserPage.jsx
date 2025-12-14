@@ -26,22 +26,22 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.06,
-      delayChildren: 0.05
+      staggerChildren: 0.07,
+      delayChildren: 0.02
     }
   }
 };
 
 const itemVariants = {
-  hidden: { x: -30, opacity: 0 },
+  hidden: { y: 40, opacity: 0 },
   visible: {
-    x: 0,
+    y: 0,
     opacity: 1,
     transition: {
       type: "spring",
-      stiffness: 500,
-      damping: 35,
-      mass: 0.5
+      stiffness: 400,
+      damping: 30,
+      mass: 0.6
     }
   }
 };
