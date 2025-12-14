@@ -35,6 +35,5 @@
 }
 
 body {
-  @apply bg-slate-900 text-white;
   overflow-x: hidden;
 }

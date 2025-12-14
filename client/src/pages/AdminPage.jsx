@@ -22,25 +22,25 @@ export default function AdminPage() {
       <div className="relative z-10 p-4 max-w-[1400px] mx-auto h-screen flex flex-col">
         <header className="flex justify-between items-center mb-6 flex-shrink-0">
           <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-purple-200 tracking-tight drop-shadow-sm">
-            Bar <span className="font-light text-white/80">Admin</span>
+            Bar <span className="font-bold text-white/90">Admin</span>
           </h1>
           <nav className="flex bg-black/20 backdrop-blur-lg p-1 rounded-2xl border border-white/10">
             <button 
               onClick={() => setActiveTab('orders')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
                 activeTab === 'orders' 
                   ? 'bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.1)] border border-white/20' 
-                  : 'text-white/40 hover:text-white hover:bg-white/5'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
               <LayoutDashboard size={18} /> 주문 확인
             </button>
             <button 
               onClick={() => setActiveTab('studio')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
                 activeTab === 'studio' 
                   ? 'bg-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.1)] border border-white/20' 
-                  : 'text-white/40 hover:text-white hover:bg-white/5'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
               <Wine size={18} /> 메뉴 관리
