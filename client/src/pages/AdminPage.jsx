@@ -39,7 +39,7 @@ export default function AdminPage() {
             </button>
             <div>
               <h1 className={`text-2xl font-serif font-bold ${THEME.textMain} tracking-tight`}>
-                Bar <span className={THEME.accent}>관리자</span>
+                바 <span className={THEME.accent}>관리자</span>
               </h1>
               <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest`}>대시보드</p>
             </div>

@@ -102,7 +102,7 @@ function MenuDetailModal({ item, onClose, onAddToCart, cartQuantity, onRemoveFro
 
         <div className={`p-5 border-t ${THEME.border} bg-[#FBFBF9] mt-auto flex items-center justify-between gap-4`}>
           <div className="flex flex-col items-start pl-1">
-            <span className={`text-xs font-semibold ${THEME.textMuted} uppercase tracking-wider`}>도수</span>
+            <span className={`text-xs font-semibold ${THEME.textMuted} uppercase tracking-wider`}>ABV</span>
             <span className={`text-2xl font-serif font-bold ${THEME.accent}`}>{item.finalAbv}<span className="text-base font-sans ml-0.5">%</span></span>
           </div>
 
@@ -187,7 +187,7 @@ function CartSheet({ cart, isOpen, onClose, onPlaceOrder, isOrdering, onUpdateQu
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-medium ${THEME.textMain} truncate`}>{item.name}</h4>
-                        <p className={`text-xs ${THEME.textMuted}`}>도수 {item.finalAbv}%</p>
+                        <p className={`text-xs ${THEME.textMuted}`}>{item.finalAbv}% ABV</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button onClick={() => onUpdateQuantity(item.id, -1)} className="p-1 text-[#8E8B86] hover:bg-[#F2F0ED] rounded"><Minus size={16} /></button>
@@ -410,7 +410,7 @@ export default function UserPage() {
       <header className={`p-6 sticky top-0 z-10 flex justify-between items-center bg-[#F9F8F6]/80 backdrop-blur-md border-b ${THEME.border} transition-all`}>
         <div>
           <h1 className={`text-2xl font-serif font-bold ${THEME.textMain} flex items-center gap-2 tracking-tight`}>
-            Bar
+            바
           </h1>
           <p className={`text-xs ${THEME.textMuted} font-medium uppercase tracking-widest ml-0.5`}>메뉴</p>
         </div>
@@ -421,81 +421,83 @@ export default function UserPage() {
         >
           <Clock size={18} strokeWidth={2} />
         </motion.button>
-      </header>
+      </header >
 
       {/* Menu List */}
-      <motion.div
+      < motion.div
         className="p-5 space-y-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {menu.length === 0 ? (
-          <div className={`text-center py-20 ${THEME.textMuted}`}>
-            <p className="mb-2">등록된 메뉴가 없습니다.</p>
-            <p className="text-xs">바텐더에게 메뉴 추가를 요청해보세요!</p>
-          </div>
-        ) : (
-          menu.map(item => {
-            const quantity = cart[item.id]?.quantity || 0;
-            return (
-              <motion.div
-                key={item.id}
-                variants={itemVariants}
-                whileTap={{ scale: 0.99 }}
-                onClick={() => setSelectedItem(item)}
-                className={`${THEME.card} p-4 rounded-xl shadow-sm border ${THEME.border} flex gap-4 items-center cursor-pointer hover:shadow-md transition-all duration-300`}
-              >
-                {/* Image */}
-                <div className="w-20 h-20 bg-[#F2F0ED] rounded-lg overflow-hidden flex-shrink-0">
-                  {item.image ? (
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-[#D3D0CB]">
-                      <Beer size={24} strokeWidth={1.5} />
-                    </div>
-                  )}
-                </div>
+        {
+          menu.length === 0 ? (
+            <div className={`text-center py-20 ${THEME.textMuted}`}>
+              <p className="mb-2">등록된 메뉴가 없습니다.</p>
+              <p className="text-xs">바텐더에게 메뉴 추가를 요청해보세요!</p>
+            </div>
+          ) : (
+            menu.map(item => {
+              const quantity = cart[item.id]?.quantity || 0;
+              return (
+                <motion.div
+                  key={item.id}
+                  variants={itemVariants}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setSelectedItem(item)}
+                  className={`${THEME.card} p-4 rounded-xl shadow-sm border ${THEME.border} flex gap-4 items-center cursor-pointer hover:shadow-md transition-all duration-300`}
+                >
+                  {/* Image */}
+                  <div className="w-20 h-20 bg-[#F2F0ED] rounded-lg overflow-hidden flex-shrink-0">
+                    {item.image ? (
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover mix-blend-multiply" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[#D3D0CB]">
+                        <Beer size={24} strokeWidth={1.5} />
+                      </div>
+                    )}
+                  </div>
 
-                <div className="flex-1 min-w-0 py-1">
-                  <h3 className={`font-serif font-bold text-lg ${THEME.textMain} truncate tracking-tight mb-0.5`}>{item.name}</h3>
-                  <p className={`${THEME.textMuted} text-sm mb-2 line-clamp-1`}>{item.description}</p>
-                  <span className={`inline-block ${THEME.bg} border ${THEME.border} ${THEME.textMuted} text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider`}>
-                    도수 {item.finalAbv}%
-                  </span>
-                </div>
+                  <div className="flex-1 min-w-0 py-1">
+                    <h3 className={`font-serif font-bold text-lg ${THEME.textMain} truncate tracking-tight mb-0.5`}>{item.name}</h3>
+                    <p className={`${THEME.textMuted} text-sm mb-2 line-clamp-1`}>{item.description}</p>
+                    <span className={`inline-block ${THEME.bg} border ${THEME.border} ${THEME.textMuted} text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider`}>
+                      {item.finalAbv}% ABV
+                    </span>
+                  </div>
 
-                <div className="flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                  {quantity > 0 ? (
-                    <motion.div
-                      initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                      className="flex flex-col items-center bg-[#F2F0ED] rounded-lg p-1"
-                    >
-                      <button onClick={() => addToCart(item)} className="p-1.5 hover:bg-white rounded-md text-[#D97757] transition-colors">
-                        <Plus size={14} />
+                  <div className="flex flex-col items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    {quantity > 0 ? (
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                        className="flex flex-col items-center bg-[#F2F0ED] rounded-lg p-1"
+                      >
+                        <button onClick={() => addToCart(item)} className="p-1.5 hover:bg-white rounded-md text-[#D97757] transition-colors">
+                          <Plus size={14} />
+                        </button>
+                        <span className={`font-bold text-sm py-0.5 w-6 text-center ${THEME.textMain}`}>{quantity}</span>
+                        <button onClick={() => removeFromCart(item.id)} className="p-1.5 hover:bg-white rounded-md text-[#8E8B86] transition-colors">
+                          <Minus size={14} />
+                        </button>
+                      </motion.div>
+                    ) : (
+                      <button
+                        onClick={() => addToCart(item)}
+                        className={`${THEME.buttonPrimary} text-[#F9F8F6] p-2.5 rounded-xl shadow hover:bg-[#4A4843] transition-colors`}
+                      >
+                        <Plus size={18} />
                       </button>
-                      <span className={`font-bold text-sm py-0.5 w-6 text-center ${THEME.textMain}`}>{quantity}</span>
-                      <button onClick={() => removeFromCart(item.id)} className="p-1.5 hover:bg-white rounded-md text-[#8E8B86] transition-colors">
-                        <Minus size={14} />
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <button
-                      onClick={() => addToCart(item)}
-                      className={`${THEME.buttonPrimary} text-[#F9F8F6] p-2.5 rounded-xl shadow hover:bg-[#4A4843] transition-colors`}
-                    >
-                      <Plus size={18} />
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })
-        )}
-      </motion.div>
+                    )}
+                  </div>
+                </motion.div >
+              );
+            })
+          )
+        }
+      </motion.div >
 
       {/* Admin Link */}
-      <motion.div
+      < motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1 }}
@@ -507,10 +509,10 @@ export default function UserPage() {
         >
           <Key size={14} /> 관리자 접속
         </button>
-      </motion.div>
+      </motion.div >
 
       {/* Floating Order Bar */}
-      <AnimatePresence>
+      < AnimatePresence >
         {totalQuantity > 0 && (
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -532,10 +534,10 @@ export default function UserPage() {
             </motion.button>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence >
 
       {/* Modals & Sheets */}
-      <AnimatePresence>
+      < AnimatePresence >
         {selectedItem && (
           <MenuDetailModal
             item={selectedItem}
@@ -545,7 +547,7 @@ export default function UserPage() {
             cartQuantity={cart[selectedItem?.id]?.quantity || 0}
           />
         )}
-      </AnimatePresence>
+      </AnimatePresence >
 
       <CartSheet
         isOpen={cartOpen}
@@ -560,6 +562,6 @@ export default function UserPage() {
         isOpen={historyOpen}
         onClose={() => setHistoryOpen(false)}
       />
-    </div>
+    </div >
   );
 }
